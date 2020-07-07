@@ -1,0 +1,185 @@
+import { Split, Horizontal } from "mdx-deck";
+import { highlight } from "@mdx-deck/themes";
+import errorImg from "./error.png";
+
+export const theme = {
+  ...highlight,
+};
+
+# PropTypes
+
+### _Why should we stop using `object`, `array` and `any` ?_
+
+---
+
+## What does PropTypes solve ?
+
+- Javascript has no types
+- React components you need to pass a lot of props
+- They serve as documentation (defines props and data passed)
+- Prevents bugs and reduce the amount of time spent on debugging and testing
+- Enables fast development (agile)
+
+---
+
+## PropTypes.any
+
+```js
+Component.propTypes = {
+  prop: PropTypes.any,
+};
+
+// Anything
+<Component prop={variable} />;
+```
+
+---
+
+## PropTypes.object
+
+```js
+Component.propTypes = {
+  prop: PropTypes.object,
+};
+
+// Object only but doesn't care what is inside
+<Component prop={{}} />;
+```
+
+---
+
+## PropTypes.array
+
+```js
+Component.propTypes = {
+  prop: PropTypes.array,
+};
+
+// Array only but doesn't care what is inside
+<Component prop={[]} />;
+```
+
+---
+
+## Component example (Not well defined)
+
+```js
+const Component = ({ item }) => {
+  return item?.location_info?.postcode_name;
+};
+
+Component.PropTypes = {
+  item: PropTypes.object,
+};
+```
+
+---
+
+## PropTypes.shape
+
+```js
+Component.PropTypes = {
+  obj: PropTypes.shape({
+    value: PropTypes.string,
+    value2: PropTypes.string.isRequired,
+    // ... other props
+  }),
+};
+```
+
+---
+
+## PropTypes.arrayOf
+
+```js
+Component.PropTypes = {
+  obj: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+      value2: PropTypes.string.isRequired,
+      // ... other props
+    })
+  ),
+};
+```
+
+---
+
+## Component example
+
+```js
+const Component = ({ item }) => {
+  return item?.location_info?.postcode_name;
+};
+
+Component.PropTypes = {
+  item: PropTypes.shape({
+    location_info: PropTypes.shape({
+      postcode_name: PropTypes.string,
+      // ... other values
+    }).isRequired,
+  }).isRequired,
+};
+```
+
+PropTypes - gives you information in `console` about incorrect data/types
+
+---
+
+## Errors/Debugging
+
+<img src={errorImg} style={{ width: "800px" }} />
+
+---
+
+## Types can be reused
+
+```js
+
+const locationInfoShape = // ....
+
+const ItemPropTypes = {
+  location_info: PropTypes.shape(locationInfoShape).isRequired,
+  otherValue: PropTypes.string
+}
+
+Component.PropTypes = {
+  item: PropTypes.shape(ItemPropTypes).isRequired,
+};
+```
+
+---
+
+## So what can we do ?
+
+- Already using PropTypes so it is a small investment
+- Introduce `types` folder and define PropTypes and reuse them
+- Stop using on new components `object`, `array`
+- Orrrrr ....
+
+---
+
+## TypeScript ([demo](https://www.typescriptlang.org/play/?jsx=2&ssl=1&ssc=1&pln=15&pc=2#code/C4TwDgpgBACgTgezAZygXigbwFBSggIwCsAuLXPKANwEMAbAVwgH4yA7BgWwIjgG4KAXwF4AlmzANgZZMDjiA5iKg04cGXMUBtALoDh2bAGMEbWVADCCTmFMQ2wdFAAUYRCjLwkyAJToAfOR4bt4AdIREAEz6Asam5gDywAAWvFY2dg5Ozn5ogTh4cBDADHBsUAA86bZs9o7+2IJAA))
+
+- Instant feedback (TypeScript is integrated well in all major IDE, autocomplete)
+- Catch errors in IDE while typing vs console
+- Allows to be more flexible with definitions
+- Documentation within the code
+
+```tsx
+type Props = {
+  obj: {
+    value?: number;
+  };
+  input: string;
+  arr: string[];
+};
+
+const Component = (props: Props) => {
+  props.obj.value;
+};
+```
+
+---
+
+# The End
